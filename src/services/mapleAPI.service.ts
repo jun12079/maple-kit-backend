@@ -1,6 +1,8 @@
 /**
  * MapleStory Taiwan Open API Service
  * 官方 API 文檔：https://openapi.maplestory.nexon.com
+ * 
+ * 此 Service 只負責呼叫 Nexon API，業務邏輯寫在 CharacterService
  */
 
 import { makeNexonAPIRequest } from './nexonAPI.service';
@@ -38,96 +40,6 @@ export class MapleAPIService {
     return makeNexonAPIRequest<{ ocid: string }>('/id', {
       character_name: characterName,
     });
-  }
-
-  /**
-   * 一次獲取所有角色相關資料
-   * 並行呼叫所有 Nexon API 端點並組合結果
-   */
-  async getAllCharacterData(ocid: string, date: string | null = null): Promise<any> {
-    try {
-      // 並行呼叫所有端點
-      const [
-        basic,
-        popularity,
-        stat,
-        hyperStat,
-        ability,
-        propensity,
-        itemEquipment,
-        cashItemEquipment,
-        symbolEquipment,
-        setEffect,
-        beautyEquipment,
-        androidEquipment,
-        petEquipment,
-        skill,
-        linkSkill,
-        vMatrix,
-        hexaMatrix,
-        hexaMatrixStat,
-        dojang,
-        union,
-        unionRaider,
-        unionArtifact,
-        unionChampion,
-      ] = await Promise.allSettled([
-        this.getCharacterBasic(ocid, date),
-        this.getCharacterPopularity(ocid, date),
-        this.getCharacterStat(ocid, date),
-        this.getCharacterHyperStat(ocid, date),
-        this.getCharacterAbility(ocid, date),
-        this.getCharacterPropensity(ocid, date),
-        this.getCharacterItemEquipment(ocid, date),
-        this.getCharacterCashItemEquipment(ocid, date),
-        this.getCharacterSymbolEquipment(ocid, date),
-        this.getCharacterSetEffect(ocid, date),
-        this.getCharacterBeautyEquipment(ocid, date),
-        this.getCharacterAndroidEquipment(ocid, date),
-        this.getCharacterPetEquipment(ocid, date),
-        this.getCharacterSkill(ocid, date, '6'),
-        this.getCharacterLinkSkill(ocid, date),
-        this.getCharacterVMatrix(ocid, date),
-        this.getCharacterHexaMatrix(ocid, date),
-        this.getCharacterHexaMatrixStat(ocid, date),
-        this.getCharacterDojang(ocid, date),
-        this.getUnion(ocid, date),
-        this.getUnionRaider(ocid, date),
-        this.getUnionArtifact(ocid, date),
-        this.getUnionChampion(ocid, date),
-      ]);
-
-      // 組合所有成功的結果
-      return {
-        ocid,
-        date: date || new Date().toISOString().split('T')[0],
-        basic: basic.status === 'fulfilled' ? basic.value : null,
-        popularity: popularity.status === 'fulfilled' ? popularity.value : null,
-        stat: stat.status === 'fulfilled' ? stat.value : null,
-        hyperStat: hyperStat.status === 'fulfilled' ? hyperStat.value : null,
-        ability: ability.status === 'fulfilled' ? ability.value : null,
-        propensity: propensity.status === 'fulfilled' ? propensity.value : null,
-        itemEquipment: itemEquipment.status === 'fulfilled' ? itemEquipment.value : null,
-        cashItemEquipment: cashItemEquipment.status === 'fulfilled' ? cashItemEquipment.value : null,
-        symbolEquipment: symbolEquipment.status === 'fulfilled' ? symbolEquipment.value : null,
-        setEffect: setEffect.status === 'fulfilled' ? setEffect.value : null,
-        beautyEquipment: beautyEquipment.status === 'fulfilled' ? beautyEquipment.value : null,
-        androidEquipment: androidEquipment.status === 'fulfilled' ? androidEquipment.value : null,
-        petEquipment: petEquipment.status === 'fulfilled' ? petEquipment.value : null,
-        skill: skill.status === 'fulfilled' ? skill.value : null,
-        linkSkill: linkSkill.status === 'fulfilled' ? linkSkill.value : null,
-        vMatrix: vMatrix.status === 'fulfilled' ? vMatrix.value : null,
-        hexaMatrix: hexaMatrix.status === 'fulfilled' ? hexaMatrix.value : null,
-        hexaMatrixStat: hexaMatrixStat.status === 'fulfilled' ? hexaMatrixStat.value : null,
-        dojang: dojang.status === 'fulfilled' ? dojang.value : null,
-        union: union.status === 'fulfilled' ? union.value : null,
-        unionRaider: unionRaider.status === 'fulfilled' ? unionRaider.value : null,
-        unionArtifact: unionArtifact.status === 'fulfilled' ? unionArtifact.value : null,
-        unionChampion: unionChampion.status === 'fulfilled' ? unionChampion.value : null,
-      };
-    } catch (error) {
-      throw error;
-    }
   }
 
   /**
