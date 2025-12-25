@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mapleAPIService } from '../services/mapleAPI.service';
+import { characterService } from '../services/character.service';
 import { validateRequiredParams } from '../services/nexonAPI.service';
 
 /**
@@ -14,7 +14,7 @@ export const getCharacterOCID = async (req: Request, res: Response) => {
       return res.status(400).json({ error });
     }
 
-    const data = await mapleAPIService.getCharacterOCID(character_name as string);
+    const data = await characterService.getCharacterOCID(character_name as string);
     res.json(data);
   } catch (error: any) {
     res.status(error.status || 500).json({
@@ -37,7 +37,7 @@ export const getAllCharacterData = async (req: Request, res: Response) => {
       return res.status(400).json({ error });
     }
 
-    const data = await mapleAPIService.getAllCharacterData(
+    const data = await characterService.getAllCharacterData(
       ocid as string,
       (date as string) || null
     );

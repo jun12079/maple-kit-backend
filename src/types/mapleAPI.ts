@@ -636,6 +636,12 @@ export interface CharacterUnionChampion {
   champion_badge_total_info: UnionChampionBadgeInfo[];
 }
 
+export interface UnionChampionDetail {
+  champion_name: string;
+  character_image: string;
+  character_level: number;
+}
+
 export interface MapleAPIErrorBody {
   name: string;
   message: string;

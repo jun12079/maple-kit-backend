@@ -8,9 +8,17 @@ dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// CORS 設定：開發環境允許 localhost，正式環境只允許指定的前端網址
+const corsOptions = {
+  origin: NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : ['http://localhost:3000', 'http://127.0.0.1:3000']
+};
 
 // 中介層
-app.use(cors()); // 啟用 CORS
+app.use(cors(corsOptions)); // 啟用 CORS
 app.use(express.json()); // 解析 JSON 請求
 app.use(express.urlencoded({ extended: true })); // 解析 URL 編碼的請求
 
@@ -37,7 +45,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // 啟動伺服器
 app.listen(PORT, () => {
   console.log(`伺服器正在執行，監聽 PORT: ${PORT}`);
-  console.log(`環境: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`環境: ${NODE_ENV}`);
+  console.log(`允許的 CORS 來源: ${NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'localhost:3000'}`);
 });
 
 export default app;
