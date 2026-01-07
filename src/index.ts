@@ -12,8 +12,11 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // CORS 設定：開發環境允許 localhost，正式環境只允許指定的前端網址
 const corsOptions = {
-  origin: NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+  origin: NODE_ENV === 'production'
+    ? [
+      process.env.FRONTEND_URL || 'https://www.maple-kit.com',
+      'https://maple-kit.vercel.app'
+    ]
     : ['http://localhost:3000', 'http://127.0.0.1:3000']
 };
 
